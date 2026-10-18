@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "택배 음성알림 데모",
+    "slug": "delivery-voice-demo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.demo.deliveryvoice"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.demo.deliveryvoice"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "backgroundColor": "#0B1220",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "송장 바코드/QR 스캔을 위해 카메라를 사용합니다.",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ]
+    ]
+  }
+}
