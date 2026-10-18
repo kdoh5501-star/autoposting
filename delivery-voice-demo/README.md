@@ -110,9 +110,9 @@ npm run server
 
 ### 웹 브라우저로 빠른 확인 (선택)
 ```bash
-npx expo install react-dom react-native-web
 npx expo start --web
 ```
+카메라 바코드 인식은 휴대폰에서 확인하고, 웹에서는 "샘플 송장 사용" 버튼으로 흐름을 확인하세요.
 
 ### 독립 실행 APK 만들기 (Expo Go 없이 배포)
 ```bash

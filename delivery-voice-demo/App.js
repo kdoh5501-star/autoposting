@@ -537,13 +537,15 @@ function LoginScreen({ deviceId, initial, onLogin }) {
 // 화면 2: 바코드 / QR 스캔
 // ─────────────────────────────────────────────────────────────
 const FRAME_W = 280;
+// 스캔 화면은 매번 다시 마운트되므로 샘플 순번은 화면 밖에 보관
+let sampleCursor = 0;
 const FRAME_H = 200;
 
 function ScanScreen({ session, onParsed, onLogs, onLogout }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState(false);
   const [manual, setManual] = useState('');
-  const [sampleIdx, setSampleIdx] = useState(0);
+  const [sampleIdx, setSampleIdx] = useState(sampleCursor);
   const lockRef = useRef(false);
   const anim = useRef(new Animated.Value(0)).current;
 
@@ -575,7 +577,8 @@ function ScanScreen({ session, onParsed, onLogs, onLogout }) {
 
   const useSample = () => {
     const raw = SAMPLE_PAYLOADS[sampleIdx % SAMPLE_PAYLOADS.length];
-    setSampleIdx((i) => i + 1);
+    sampleCursor = sampleIdx + 1;
+    setSampleIdx(sampleCursor);
     accept(raw, 'sample');
   };
 
