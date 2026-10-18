@@ -114,10 +114,14 @@ npx expo start --web
 ```
 카메라 바코드 인식은 휴대폰에서 확인하고, 웹에서는 "샘플 송장 사용" 버튼으로 흐름을 확인하세요.
 
-### 독립 실행 APK 만들기 (Expo Go 없이 배포)
-```bash
-npx eas-cli@latest build -p android --profile preview
-```
+### 독립 실행 APK (Expo Go 없이 설치)
+`delivery-voice-demo/` 가 바뀌어 푸시되면 GitHub Actions(`.github/workflows/android-apk.yml`)가 APK를 자동 빌드합니다 (약 15~25분).
+1. 휴대폰 브라우저로 GitHub 저장소 → **Releases** → 최신 `apk-N` → `delivery-voice-demo.apk` 다운로드
+2. 설치 시 "출처를 알 수 없는 앱" 허용 → 설치
+- arm64 기기 전용(2017년 이후 대부분의 Android 폰), 시연용 debug 키 서명
+- 같은 Wi-Fi의 PC 데모 서버(`http://…`) 연동을 위해 HTTP 통신 허용 설정 포함
+
+직접 빌드하려면 Expo 계정으로 `npx eas-cli@latest build -p android --profile preview`
 
 ---
 

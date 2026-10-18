@@ -1,0 +1,73 @@
+name: Android APK (delivery-voice-demo)
+
+on:
+  push:
+    paths:
+      - 'delivery-voice-demo/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: delivery-voice-demo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: delivery-voice-demo/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --no-install
+        env:
+          CI: 1
+
+      # release 빌드는 Expo 템플릿 기본값대로 debug 키로 서명되어 바로 설치 가능 (시연용)
+      - name: Build release APK (arm64)
+        working-directory: delivery-voice-demo/android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+
+      - name: Collect APK
+        run: |
+          mkdir -p ../dist
+          cp android/app/build/outputs/apk/release/app-release.apk ../dist/delivery-voice-demo.apk
+          ls -lh ../dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: delivery-voice-demo-apk
+          path: dist/delivery-voice-demo.apk
+
+      - name: Publish GitHub Release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="apk-${{ github.run_number }}"
+          gh release create "$TAG" dist/delivery-voice-demo.apk \
+            --target "${{ github.sha }}" \
+            --title "택배 음성알림 데모 APK #${{ github.run_number }}" \
+            --notes "브랜치 ${{ github.ref_name }} / 커밋 ${{ github.sha }} 에서 자동 빌드된 시연용 APK (arm64, debug 키 서명)."
